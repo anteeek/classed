@@ -1,9 +1,12 @@
 {
-  "name": "classer",
+  "name": "@antek/classed",
   "version": "0.0.1",
   "main": "build/index.js",
   "private": false,
-  "repository": "github.com/anteeek/classed",
+  "repository": {
+    "type": "git",
+    "url": "github.com/anteeek/classed"
+  },
   "author": "@anteeek",
   "license": "MIT",
   "scripts": {
@@ -17,5 +20,6 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "react": "^17.0.1"
-  }
+  },
+  "description": ""
 }
