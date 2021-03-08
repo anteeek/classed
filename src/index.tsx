@@ -92,14 +92,12 @@ const headingClassers = {
     h5: makeClasser<HTMLHeadingElement>("h5"),
 }
 
-const classer = {
+const classed = {
     ...containerClassers,
     ...miscClassers,
     ...headingClassers,
 }
 
 
-const D = classer.div`hehehe`
 
-
-export default classer;
+export default classed;
