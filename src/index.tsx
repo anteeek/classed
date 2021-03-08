@@ -69,6 +69,8 @@ const miscClassers = {
     b: makeClasser<HTMLSpanElement>("b"),
     i: makeClasser<HTMLSpanElement>("i"),
 
+    svg: makeClasser<SVGElement>("svg"),
+
     strong: makeClasser<HTMLSpanElement>("strong"),
     li: makeClasser<HTMLLIElement>("li"),
     ul: makeClasser<HTMLUListElement>("ul"),
