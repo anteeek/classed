@@ -2,20 +2,43 @@ import React, { HTMLProps } from "react";
 import classnames from "classnames";
 
 
-type TClasser<TagType> = (className: string) => (props: HTMLProps<TagType>) => any;
+type TClasserElProps<TagType, Additional> = HTMLProps<TagType> & Additional; 
 
+type TClasserResolver<TagType, Additional> = (
+    TemplateStringsArray |
+    string | 
+    ((elProps: TClasserElProps<TagType, Additional>) => Parameters<typeof classnames>[0])
+)
 
-function makeClasser<TagType>(Tag: string): TClasser<TagType> {
-    return (className: string) => (
-        (props: HTMLProps<TagType>) => (
-            <Tag 
-                {...{
-                    ...props,
-                    className: classnames(props.className, className)
-                }} 
-            />
-        )
-    );
+function makeClasser<TagType>(Tag: string) {
+
+    return function classer<Additional>(resolver: TClasserResolver<TagType, Additional>) {
+
+        return function classerResult(passedProps: TClasserElProps<TagType, Additional>) {
+
+            let resolvedClassname: string;
+
+            if(typeof resolver === "function")
+                resolvedClassname = classnames(resolver(passedProps));
+            else if(typeof resolver === "string")
+                resolvedClassname = resolver;
+            else if(Array.isArray(resolver)) 
+                resolvedClassname = classnames(...resolver);
+            else 
+                //this should never happen
+                resolvedClassname = "";
+            
+
+            return (
+                <Tag 
+                    {...{
+                        ...passedProps,
+                        className: classnames(passedProps.className, resolvedClassname)
+                    }} 
+                />
+            )
+        }
+    }
 }
 
 
@@ -24,11 +47,41 @@ const containerClassers = {
     article: makeClasser<HTMLDivElement>("article"),
     section: makeClasser<HTMLDivElement>("section"),
     span: makeClasser<HTMLSpanElement>("span"),
+    blockquote: makeClasser<HTMLQuoteElement>("blockquote"),
+    summary: makeClasser<HTMLSpanElement>("summary"),
+    pre: makeClasser<HTMLPreElement>("pre"),
+
+    table: makeClasser<HTMLTableElement>("table"),
+    tbody: makeClasser<HTMLTableSectionElement>("tbody"),
+    td: makeClasser<HTMLTableDataCellElement>("td"),
+    th: makeClasser<HTMLHeadElement>("th"),
+    tfoot: makeClasser<HTMLTableSectionElement>("tfoot"),
+
 }
 
 const miscClassers = {
+    image: makeClasser<HTMLImageElement>("image"),
     img: makeClasser<HTMLImageElement>("img"),
-    em: makeClasser<HTMLSpanElement>("em")
+    video: makeClasser<HTMLVideoElement>("video"),    
+
+    a: makeClasser<HTMLLinkElement>("a"),
+
+    b: makeClasser<HTMLSpanElement>("b"),
+    i: makeClasser<HTMLSpanElement>("i"),
+
+    strong: makeClasser<HTMLSpanElement>("strong"),
+    li: makeClasser<HTMLLIElement>("li"),
+    ul: makeClasser<HTMLUListElement>("ul"),
+    ol: makeClasser<HTMLOListElement>("ol"),
+    em: makeClasser<HTMLSpanElement>("em"),
+    
+    form: makeClasser<HTMLFormElement>("form"),
+    textarea: makeClasser<HTMLTextAreaElement>("textarea"),
+    input: makeClasser<HTMLInputElement>("input"),
+    button: makeClasser<HTMLButtonElement>("button"),
+
+    progress: makeClasser<HTMLProgressElement>("progress"),
+    noscript: makeClasser<HTMLElement>("noscript"),
 };
 
 const headingClassers = {
@@ -41,9 +94,12 @@ const headingClassers = {
 
 const classer = {
     ...containerClassers,
-    miscClassers,
-    headingClassers,
+    ...miscClassers,
+    ...headingClassers,
 }
+
+
+const D = classer.div`hehehe`
 
 
 export default classer;
