@@ -14,7 +14,7 @@ function makeClasser<TagType>(Tag: string) {
 
     return function classer<Additional>(resolver: TClasserResolver<TagType, Additional>) {
 
-        return function classerResult(passedProps: TClasserElProps<TagType, Additional>) {
+        return React.forwardRef<TagType, TClasserElProps<TagType, Additional>>((passedProps, ref) => {
 
             let resolvedClassname: string;
 
@@ -25,19 +25,19 @@ function makeClasser<TagType>(Tag: string) {
             else if(Array.isArray(resolver)) 
                 resolvedClassname = classnames(...resolver);
             else 
-                //this should never happen
+                //this should ~~theoretically~~ never happen with proper typescript usage
                 resolvedClassname = "";
             
-
             return (
                 <Tag 
                     {...{
                         ...passedProps,
                         className: classnames(passedProps.className, resolvedClassname)
                     }} 
+                    ref={ref}
                 />
             )
-        }
+        })
     }
 }
 
@@ -99,7 +99,6 @@ const classed = {
     ...miscClassers,
     ...headingClassers,
 }
-
 
 
 export default classed;
