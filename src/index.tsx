@@ -2,11 +2,11 @@ import React, { HTMLProps } from "react";
 import classnames from "classnames";
 
 
-type TClasserElProps<TagType, Additional> = HTMLProps<TagType> & Additional; 
+type TClasserElProps<TagType, Additional> = HTMLProps<TagType> & Additional;
 
 type TClasserResolver<TagType, Additional> = (
     TemplateStringsArray |
-    string | 
+    string |
     ((elProps: TClasserElProps<TagType, Additional>) => Parameters<typeof classnames>[0])
 )
 
@@ -18,22 +18,22 @@ function makeClasser<TagType>(Tag: string) {
 
             let resolvedClassname: string;
 
-            if(typeof resolver === "function")
+            if (typeof resolver === "function")
                 resolvedClassname = classnames(resolver(passedProps));
-            else if(typeof resolver === "string")
+            else if (typeof resolver === "string")
                 resolvedClassname = resolver;
-            else if(Array.isArray(resolver)) 
+            else if (Array.isArray(resolver))
                 resolvedClassname = classnames(...resolver);
-            else 
+            else
                 //this should ~~theoretically~~ never happen with proper typescript usage
                 resolvedClassname = "";
-            
+
             return (
-                <Tag 
+                <Tag
                     {...{
                         ...passedProps,
                         className: classnames(passedProps.className, resolvedClassname)
-                    }} 
+                    }}
                     ref={ref}
                 />
             )
@@ -62,7 +62,7 @@ const containerClassers = {
 const miscClassers = {
     image: makeClasser<HTMLImageElement>("image"),
     img: makeClasser<HTMLImageElement>("img"),
-    video: makeClasser<HTMLVideoElement>("video"),    
+    video: makeClasser<HTMLVideoElement>("video"),
 
     a: makeClasser<HTMLLinkElement>("a"),
 
@@ -76,11 +76,12 @@ const miscClassers = {
     ul: makeClasser<HTMLUListElement>("ul"),
     ol: makeClasser<HTMLOListElement>("ol"),
     em: makeClasser<HTMLSpanElement>("em"),
-    
+
     form: makeClasser<HTMLFormElement>("form"),
     textarea: makeClasser<HTMLTextAreaElement>("textarea"),
     input: makeClasser<HTMLInputElement>("input"),
     button: makeClasser<HTMLButtonElement>("button"),
+    label: makeClasser<HTMLLabelElement>("label"),
 
     progress: makeClasser<HTMLProgressElement>("progress"),
     noscript: makeClasser<HTMLElement>("noscript"),
